@@ -85,7 +85,7 @@ pascalDef = Token.LanguageDef
       "xor"
     ]
   , Token.reservedOpNames = []
-  , Token.caseSensitive = True
+  , Token.caseSensitive = False
   }
 
 pascal :: Token.GenTokenParser Text st Identity
