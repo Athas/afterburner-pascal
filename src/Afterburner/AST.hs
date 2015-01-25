@@ -125,7 +125,7 @@ data Statement = CompoundStatement [Statement]
                | WhileLoop Expression Statement
                | IfThen Expression Statement
                | IfThenElse Expression Statement Statement
-               | CaseStatement Expression Case [Case]
+               | CaseStatement Expression [Case]
                | Repeat [Statement] Expression
                | Skip
                deriving (Show)
@@ -135,8 +135,7 @@ data Direction = UpTo
                deriving (Show)
 
 data Case =
-  Case { caseConstant :: Constant
-       , caseMoreConstants :: [Constant]
+  Case { caseConstants :: [Constant]
        , caseStatement :: Statement
        }
   deriving (Show)

@@ -276,6 +276,14 @@ statement =
 
          , branch
 
+         , pure CaseStatement <* reserved "case" <*> expression
+           <* reserved "of" <*> switchCase `sepBy1` semicolon
+
+         , pure Repeat <* reserved "repeat" <*>
+           statement `sepBy1` semicolon <*
+           reserved "until" <*>
+           expression
+
          , pure Skip
          ]
 
@@ -288,6 +296,9 @@ branch = do reserved "if"
                fbranch <- statement
                return $ IfThenElse cond tbranch fbranch
                <|> return (IfThen cond tbranch)
+
+switchCase :: Parser Case
+switchCase = Case <$> constant `sepBy1` comma <*> statement
 
 direction :: Parser Direction
 direction = reserved "to" *> pure UpTo <|>
