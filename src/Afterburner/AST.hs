@@ -44,7 +44,7 @@ import Data.Text (Text)
 type Id = Text
 
 data Program = Program { programId :: Id
-                       , programExports :: [Id]
+                       , programParameters :: [Id]
                        , programDeclarations :: Declarations
                        , programStatement :: Statement
                        }
