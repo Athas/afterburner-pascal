@@ -4,4 +4,4 @@ begin
    res := 1;
    for i := n downto 1 do
       res := res * i
-end
+end.

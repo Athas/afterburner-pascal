@@ -118,6 +118,9 @@ comma = void $ Token.comma pascal
 semicolon :: Parser ()
 semicolon = void $ Token.symbol pascal ";"
 
+period :: Parser ()
+period = void $ Token.symbol pascal "."
+
 colon :: Parser ()
 colon = void $ Token.colon pascal
 
@@ -132,7 +135,7 @@ program = reserved "program" *>
           identifier <*>
           (parens (many identifier) <|> pure []) <* semicolon <*>
           declarations <*>
-          statement
+          statement <* period
 
 declarations :: Parser Declarations
 declarations = Declarations <$>
@@ -263,7 +266,7 @@ statement :: Parser Statement
 statement =
   choice [ CompoundStatement <$> compoundStatement
 
-         , Assign <$> variable <* operator ":=" <*> expression
+         , try $ Assign <$> variable <* operator ":=" <*> expression
 
          , ProcedureCall <$> identifier <*> actuals
 
@@ -323,7 +326,7 @@ expression = buildExpressionParser table prim
 prim :: Parser Expression
 prim =  parens expression
         <|> Constant <$> constant
-        <|> FunctionCall <$> identifier <*> actuals
+        <|> try (FunctionCall <$> identifier <*> actuals)
         <|> Variable <$> identifier
         <?> "primitive expression"
 
@@ -342,7 +345,14 @@ table   = [ [ prefix "-" PrefixMinus
             , binary "-" Minus   AssocLeft
             , binaryW "or" Or   AssocLeft
             ]
-           ]
+          , [ binary "=" Equal AssocLeft
+            , binary "<>" NotEqual AssocLeft
+            , binary "<" LessThan AssocLeft
+            , binary "<=" LessThanOrEqual AssocLeft
+            , binary ">" GreaterThan AssocLeft
+            , binary ">=" GreaterThanOrEqual AssocLeft
+            ]
+          ]
   where binary   name fun assoc = Infix  (operator name *> return fun) assoc
         binaryW  name fun assoc = Infix  (reserved name *> return fun) assoc
         prefix   name fun       = Prefix (operator name *> return fun)
