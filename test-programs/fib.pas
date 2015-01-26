@@ -1,6 +1,6 @@
 program fib(n);
 
-function fib(n: Integer);
+function fib(n: Integer): Integer;
 begin
   if n = 0 then
     fib := 0
